@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NURS 249 Quiz</title><meta name="theme-color" content="#1b2a6b">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff7fb;--card:#fff;--tx:#1b2150;--mu:#6b6f9a;--p:#e86fb0;--v:#7b4fd6;--b:#2f5bd8;--s:#7ec8f2;--g:#e8b23a;--n:#1b2a6b;--ok:#2aa876;--bad:#e25563;--sh:0 6px 20px rgba(80,60,160,.12)}
+@media(prefers-color-scheme:dark){:root:not([data-t=light]){--bg:#0e1431;--card:#1a2250;--tx:#f2f3ff;--mu:#a9afdc;--sh:0 6px 20px rgba(0,0,0,.4)}}
+:root[data-t=dark]{--bg:#0e1431;--card:#1a2250;--tx:#f2f3ff;--mu:#a9afdc;--sh:0 6px 20px rgba(0,0,0,.4)}
+*{box-sizing:border-box}body{margin:0;font-family:Nunito,sans-serif;background:linear-gradient(160deg,var(--bg),color-mix(in srgb,var(--s) 22%,var(--bg)));color:var(--tx);min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+h1,h2,h3{font-family:Fredoka,sans-serif;margin:.2em 0}
+#app{max-width:560px;margin:auto;padding:16px;position:relative;z-index:2}
+.fl{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.fl span{position:absolute;bottom:-50px;font-size:26px;opacity:.5;animation:up linear infinite}
+@keyframes up{to{transform:translateY(-115vh) rotate(25deg)}}
+.hero{background:linear-gradient(135deg,var(--n),var(--v) 55%,var(--p));color:#fff;border-radius:24px;padding:18px;box-shadow:var(--sh)}
+.hero small{opacity:.85}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{background:rgba(255,255,255,.2);border-radius:99px;padding:5px 12px;font-weight:800;font-size:14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin:12px 0;box-shadow:var(--sh);border:1px solid color-mix(in srgb,var(--v) 15%,transparent)}
+.bar{height:8px;background:color-mix(in srgb,var(--s) 35%,transparent);border-radius:9px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--s),var(--b),var(--v));}
+button{font:inherit;font-weight:800;border:0;border-radius:14px;padding:11px 16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--v),var(--b))}
+button.g{background:linear-gradient(135deg,var(--g),#f3cf72);color:#3a2b00}button.l{background:color-mix(in srgb,var(--v) 14%,transparent);color:var(--tx)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;background:var(--card);color:var(--tx);border:2px solid color-mix(in srgb,var(--v) 25%,transparent);font-weight:700}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--card))}.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--card))}
+.warn{background:#ffe9b8;color:#5a3d00;border-radius:14px;padding:10px;margin:10px 0;font-weight:700}
+textarea{width:100%;height:90px;border-radius:12px;border:2px solid var(--v);padding:8px;background:var(--card);color:var(--tx)}
+.t{font-family:Fredoka;font-size:22px}.low{color:var(--bad)}.exp{background:color-mix(in srgb,var(--s) 25%,var(--card));border-radius:14px;padding:10px;margin-top:8px}
+</style></head><body>
+<div class="fl" id="fl"></div><div id="app"></div>
+<script>document.write('<script src="quiz-data.js?t='+Date.now()+'"><\/script>')</script>
+<script>
+const K='nurs249-obstetric-quiz-v1',PART=40,D=window.QUIZ_DATA;
+const $=id=>document.getElementById(id),app=$('app');
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+S=Object.assign({best:{},att:{},q:{},n:0,day:'',run:null,dark:null},S||{});
+let canSave=true;function save(){try{localStorage.setItem(K,JSON.stringify(S));return true}catch(e){canSave=false;return false}}
+try{localStorage.setItem(K+'t','1');localStorage.removeItem(K+'t')}catch(e){canSave=false}
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+if(S.dark)document.documentElement.dataset.t=S.dark;
+function h(s){let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))>>>0;return x.toString(36)}
+const Q={},L={};D.lessons.forEach(l=>{L[l.id]=l;l.ids=l.qs.map(q=>{q.id=l.id+'-'+h(q.q);q.l=l.id;Q[q.id]=q;return q.id})});
+const em=['🩺','💉','🤰','👩‍⚕️','🩹','💊','🍼','❤️','✨','🌸','💪','⭐','🏥','🧬','💙','👶'];
+$('fl').innerHTML=Array.from({length:16},(_,i)=>`<span style="left:${i*6.5}%;animation-duration:${14+i%6*4}s;animation-delay:-${i*2}s">${em[i]}</span>`).join('');
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const lv=['Student Nurse 🌱','Junior Carer 💙','Ward Star ⭐','Midwife in Training 🍼','Senior Midwife 💜','Matron 👑'];
+const tot=()=>Object.values(S.q).reduce((a,x)=>a+x.c,0);
+const lev=()=>Math.min(lv.length-1,Math.floor(tot()/25));
+const today=()=>new Date().toDateString();
+function bump(){const t=today();if(S.day===t)return;const y=new Date(Date.now()-864e5).toDateString();S.n=S.day===y?S.n+1:1;S.day=t}
+function streakNow(){const y=new Date(Date.now()-864e5).toDateString();return(S.day===today()||S.day===y)?S.n:0}
+let tm=null,run=null,rev=null;
+function home(){clearInterval(tm);run=null;let o=`<div class="hero"><small>${D.course}</small><h1>Hello, future nurse! 🩺</h1><div class="row"><span class="pill">🔥 ${streakNow()} day streak</span><span class="pill">${lv[lev()]}</span><span class="pill">✅ ${tot()} correct</span></div>
+<div class="row" style="margin-top:10px"><button class="g" onclick="daily()">Daily check-in</button><button class="l" style="color:#fff" onclick="surprise()">🎲 Surprise mix</button></div></div>`;
+if(!canSave)o+=`<div class="warn">⚠️ Private mode: progress cannot be saved. Open this page in a normal tab.</div>`;
+if(S.run)o+=`<div class="card"><b>Unfinished: ${S.run.title}</b><br>Question ${S.run.i+1} of ${S.run.ids.length}<div class="row" style="margin-top:8px"><button onclick="resume()">Resume</button><button class="l" onclick="S.run=null;save();home()">Drop</button></div></div>`;
+D.lessons.forEach(l=>{const parts=Math.ceil(l.ids.length/PART),b=S.best[l.id]||0,att=S.att[l.id]||0;
+o+=`<div class="card"><h3>${l.emoji} ${l.title}</h3><small style="color:var(--mu)">Slides ${l.slides} · ${l.ids.length} questions · Attempts ${att} · Best ${b}%</small><div class="bar"><i style="width:${b}%"></i></div>
+<button class="l" onclick="recap('${l.id}')">Start lesson</button></div>`});
+o+=`<div class="card"><h3>💾 Backup</h3><div class="row"><button class="l" onclick="bk()">Get my code</button><button class="l" onclick="rs()">Restore</button><button class="l" onclick="tg()">🌓 Theme</button></div><div id="bx"></div></div>`;
+app.innerHTML=o}
+function tg(){const c=document.documentElement.dataset.t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');S.dark=c==='dark'?'light':'dark';document.documentElement.dataset.t=S.dark;save()}
+function bk(){$('bx').innerHTML=`<textarea readonly onclick="this.select()">${btoa(unescape(encodeURIComponent(JSON.stringify(S))))}</textarea><small>Copy this code and keep it safe.</small>`}
+function rs(){$('bx').innerHTML=`<textarea id="rc" placeholder="Paste your code"></textarea><button onclick="doRs()">Restore now</button>`}
+function doRs(){try{const d=JSON.parse(decodeURIComponent(escape(atob($('rc').value.trim()))));S=Object.assign(S,d);save();home();alert('Progress restored ✅')}catch(e){alert('That code is not valid.')}}
+function recap(id){const l=L[id],parts=Math.ceil(l.ids.length/PART);
+app.innerHTML=`<div class="card"><h2>${l.emoji} ${l.title}</h2><b>Quick recap</b><ul>${l.recap.map(r=>`<li>${r}</li>`).join('')}</ul><div class="row">${Array.from({length:parts},(_,p)=>`<button onclick="part('${id}',${p})">${parts>1?'Part '+(p+1):'Begin'}</button>`).join('')}<button class="l" onclick="home()">Back</button></div></div>`}
+function part(id,p){const l=L[id];start(shuf(l.ids.slice(p*PART,p*PART+PART)),l.title+(l.ids.length>PART?' · Part '+(p+1):''),id)}
+function weak(){return Object.keys(Q).sort((a,b)=>{const f=k=>{const x=S.q[k];return x?(x.w+1)/(x.c+x.w+2)+1e-3:.5};return f(b)-f(a)})}
+function daily(){start(weak().slice(0,10),'Daily check-in 🔥','daily')}
+function surprise(){start(shuf(Object.keys(Q)).slice(0,15),'Surprise mix 🎲','mix')}
+function start(ids,title,key){run={ids,title,key,i:0,ok:[],miss:[],left:30,pick:null,o:ids.map(()=>shuf([0,1,2,3]))};S.run=run;save();show()}
+function resume(){run=S.run;run.pick=null;show()}
+function show(){clearInterval(tm);const q=Q[run.ids[run.i]];run.pick=null;
+app.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><b>${run.title}</b><span class="t" id="tm">${run.left}s</span></div><small>Question ${run.i+1} / ${run.ids.length}</small><div class="bar"><i style="width:${run.i/run.ids.length*100}%"></i></div><h3>${q.q}</h3>
+${run.o[run.i].map(k=>`<button class="opt" onclick="ans(${k})">${q.o[k]}</button>`).join('')}<div id="fb"></div></div>`;
+tm=setInterval(()=>{run.left--;const e=$('tm');if(e){e.textContent=run.left+'s';if(run.left<=8)e.className='t low'}if(run.left<=0)ans(-1);else save()},1000)}
+function ans(k){if(run.pick!==null)return;clearInterval(tm);run.pick=k;const q=Q[q_id()],r=k===q.a;
+const x=S.q[q.id]=S.q[q.id]||{c:0,w:0};r?(x.c++,run.ok.push(q.id)):(x.w++,run.miss.push(q.id));
+document.querySelectorAll('.opt').forEach((b,i)=>{const kk=run.o[run.i][i];b.disabled=true;if(kk===q.a)b.classList.add('ok');else if(kk===k)b.classList.add('no')});
+$('fb').innerHTML=`<div class="exp">${r?'✅ Correct!':k<0?'⏰ Time is up.':'❌ Not quite.'} ${q.e}<br><small>Slide ${q.s}</small></div><button style="margin-top:10px" onclick="next()">${run.i+1<run.ids.length?'Next':'See results'}</button>`;save()}
+const q_id=()=>run.ids[run.i];
+function next(){run.i++;run.left=30;if(run.i<run.ids.length){save();show()}else fin()}
+function fin(){clearInterval(tm);const n=run.ids.length,pct=Math.round(run.ok.length/n*100);
+if(L[run.key]){S.best[run.key]=Math.max(S.best[run.key]||0,pct);S.att[run.key]=(S.att[run.key]||0)+1}
+bump();S.run=null;save();const miss=run.miss.slice(),title=run.title,key=run.key;rev=miss;
+app.innerHTML=`<div class="card" style="text-align:center"><h2>${pct>=80?'🌟 Brilliant!':pct>=50?'💪 Good effort!':'📖 Keep going!'}</h2><div class="t" style="font-size:44px">${pct}%</div><p>${run.ok.length} of ${n} correct</p><div class="row" style="justify-content:center">${miss.length?`<button class="g" onclick="start(shuf(rev),'Retry missed','${key}r')">Retry missed</button><button class="l" onclick="review()">Review wrong</button>`:''}<button onclick="home()">Home</button></div></div>`}
+function review(){app.innerHTML=`<button class="l" onclick="home()">← Home</button>`+rev.map(id=>{const q=Q[id];return`<div class="card"><b>${q.q}</b><p>✅ ${q.o[q.a]}</p><div class="exp">${q.e}<br><small>Slide ${q.s}</small></div></div>`}).join('')}
+home();
+</script></body></html>
